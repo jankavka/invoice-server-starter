@@ -22,6 +22,7 @@
 package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.PersonDTO;
+import cz.itnetwork.dto.statistics.StatisticsPerson;
 import cz.itnetwork.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -60,5 +61,9 @@ public class PersonController {
         return personService.updatePerson(personId, personDTO);
     }
 
+    @GetMapping("/persons/statistics")
+    public List<StatisticsPerson> showPersonsStatistics(){
+        return personService.getPersonsStatistics();
+    }
 }
 

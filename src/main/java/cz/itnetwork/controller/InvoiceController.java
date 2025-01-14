@@ -1,6 +1,7 @@
 package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.InvoiceDTO;
+import cz.itnetwork.dto.statistics.StatisticsInvoiceDTO;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,10 @@ public class InvoiceController {
     public HttpStatus deleteInvoice(@PathVariable Long invoiceId) {
         invoiceService.deleteInvoice(invoiceId);
         return HttpStatus.NO_CONTENT;
+    }
+
+    @GetMapping("/invoices/statistics")
+    public StatisticsInvoiceDTO getSumPrices(){
+        return invoiceService.getInvoiceStatistics();
     }
 }
