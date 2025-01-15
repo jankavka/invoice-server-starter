@@ -23,14 +23,13 @@ package cz.itnetwork.service;
 
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.PersonMapper;
-import cz.itnetwork.dto.statistics.StatisticsPerson;
+import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -116,9 +115,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<StatisticsPerson> getPersonsStatistics() {
+    public List<PersonStatistics> getPersonsStatistics() {
         return personRepository.getRevenueByPerson().stream()
-                .map(a -> new StatisticsPerson((Long)a[0],(String)a[1],(Long)a[2]))
+                .map(a -> new PersonStatistics((Long)a[0],(String)a[1],(Long)a[2]))
                 .collect(Collectors.toList());
 
     }

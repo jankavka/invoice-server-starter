@@ -1,7 +1,7 @@
 package cz.itnetwork.service;
 
 import cz.itnetwork.dto.PersonDTO;
-import cz.itnetwork.dto.statistics.StatisticsPerson;
+import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.entity.PersonEntity;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public interface PersonService {
 
     PersonEntity getPersonByIdentificationNumber(String identificationNumber);
 
-    List<StatisticsPerson> getPersonsStatistics();
+    List<PersonStatistics> getPersonsStatistics();
 
 
 

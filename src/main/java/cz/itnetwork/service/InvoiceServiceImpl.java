@@ -1,7 +1,7 @@
 package cz.itnetwork.service;
 
 import cz.itnetwork.dto.InvoiceDTO;
-import cz.itnetwork.dto.statistics.StatisticsInvoiceDTO;
+import cz.itnetwork.dto.statistics.InvoiceStatistics;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.filter.InvoiceFilter;
@@ -86,12 +86,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public StatisticsInvoiceDTO getInvoiceStatistics() {
-        StatisticsInvoiceDTO statisticsDTO = new StatisticsInvoiceDTO();
-        statisticsDTO.setCurrentYearSum(invoiceRepository.getCurrentYearSum().get(0));
-        statisticsDTO.setInvoicesCount(invoiceRepository.getInvoicesCount().get(0));
-        statisticsDTO.setAllTimeSum(invoiceRepository.getAllTimeSum().get(0));
-        return statisticsDTO;
+    public InvoiceStatistics getInvoiceStatistics() {
+        InvoiceStatistics statistics = new InvoiceStatistics();
+        statistics.setCurrentYearSum(invoiceRepository.getCurrentYearSum().get(0));
+        statistics.setInvoicesCount(invoiceRepository.getInvoicesCount().get(0));
+        statistics.setAllTimeSum(invoiceRepository.getAllTimeSum().get(0));
+        return statistics;
     }
 
 }

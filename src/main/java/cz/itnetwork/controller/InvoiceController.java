@@ -1,7 +1,7 @@
 package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.InvoiceDTO;
-import cz.itnetwork.dto.statistics.StatisticsInvoiceDTO;
+import cz.itnetwork.dto.statistics.InvoiceStatistics;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoices/statistics")
-    public StatisticsInvoiceDTO getSumPrices(){
+    public InvoiceStatistics showInvoiceStatistics(){
         return invoiceService.getInvoiceStatistics();
     }
 }
