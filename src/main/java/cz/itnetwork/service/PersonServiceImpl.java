@@ -21,7 +21,9 @@
  */
 package cz.itnetwork.service;
 
+import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.PersonDTO;
+import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.dto.mapper.PersonMapper;
 import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.entity.PersonEntity;
@@ -36,11 +38,15 @@ import java.util.stream.Collectors;
 @Service
 public class PersonServiceImpl implements PersonService {
 
+
     @Autowired
     private PersonMapper personMapper;
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private InvoiceMapper invoiceMapper;
 
     public PersonDTO addPerson(PersonDTO personDTO) {
         PersonEntity entity = personMapper.toEntity(personDTO);
@@ -117,10 +123,25 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<PersonStatistics> getPersonsStatistics() {
         return personRepository.getRevenueByPerson().stream()
-                .map(a -> new PersonStatistics((Long)a[0],(String)a[1],(Long)a[2]))
+                .map(a -> new PersonStatistics((Long) a[0], (String) a[1], (Long) a[2]))
                 .collect(Collectors.toList());
 
     }
 
+    @Override
+    public List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber) {
+        return getPersonByIdentificationNumber(identificationNumber).getSales()
+                .stream()
+                .map(invoiceMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber) {
+        return getPersonByIdentificationNumber(identificationNumber).getPurchases()
+                .stream()
+                .map(invoiceMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
 }

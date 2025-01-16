@@ -1,5 +1,6 @@
 package cz.itnetwork.service;
 
+import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.entity.PersonEntity;
@@ -38,6 +39,10 @@ public interface PersonService {
     PersonEntity getPersonByIdentificationNumber(String identificationNumber);
 
     List<PersonStatistics> getPersonsStatistics();
+
+    List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber);
+
+    List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber);
 
 
 

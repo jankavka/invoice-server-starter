@@ -21,6 +21,7 @@
  */
 package cz.itnetwork.controller;
 
+import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.service.PersonService;
@@ -42,11 +43,11 @@ public class PersonController {
     }
 
     @GetMapping("/persons")
-    public List<PersonDTO> getPersons() {
+    public List<PersonDTO> getAllPersons() {
         return personService.getAll();
     }
 
-    @GetMapping("persons/{personId}")
+    @GetMapping("/persons/{personId}")
     public PersonDTO getPerson(@PathVariable long personId){
         return personService.getPerson(personId);
     }
@@ -57,13 +58,23 @@ public class PersonController {
     }
 
     @PutMapping("/persons/{personId}")
-    public PersonDTO updatePerson(@PathVariable Long personId, @RequestBody PersonDTO personDTO){
+    public PersonDTO editPerson(@PathVariable Long personId, @RequestBody PersonDTO personDTO){
         return personService.updatePerson(personId, personDTO);
     }
 
     @GetMapping("/persons/statistics")
     public List<PersonStatistics> showPersonsStatistics(){
         return personService.getPersonsStatistics();
+    }
+
+    @GetMapping("/identification/{identificationNumber}/sales")
+    public List<InvoiceDTO> showAllInvoicesBySeller(@PathVariable String identificationNumber) {
+        return personService.getAllInvoicesBySeller(identificationNumber);
+    }
+
+    @GetMapping("/identification/{identificationNumber}/purchases")
+    public List<InvoiceDTO> showAllInvoicesByBuyer(@PathVariable String identificationNumber) {
+        return personService.getAllInvoicesByBuyer(identificationNumber);
     }
 }
 

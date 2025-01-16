@@ -27,18 +27,8 @@ public class InvoiceController {
         return invoiceService.getAllInvoices(invoiceFilter);
     }
 
-    @GetMapping("identification/{identificationNumber}/sales")
-    public List<InvoiceDTO> getAllInvoicesBySeller(@PathVariable String identificationNumber) {
-        return invoiceService.getAllInvoicesBySeller(identificationNumber);
-    }
-
-    @GetMapping("identification/{identificationNumber}/purchases")
-    public List<InvoiceDTO> getAllInvoicesByBuyer(@PathVariable String identificationNumber) {
-        return invoiceService.getAllInvoicesByBuyer(identificationNumber);
-    }
-
     @GetMapping("/invoices/{invoiceId}")
-    public InvoiceDTO getInvoiceDetail(@PathVariable Long invoiceId) {
+    public InvoiceDTO showInvoiceDetail(@PathVariable Long invoiceId) {
         return invoiceService.getInvoice(invoiceId);
     }
 

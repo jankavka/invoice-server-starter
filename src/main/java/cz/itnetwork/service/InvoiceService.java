@@ -12,10 +12,6 @@ public interface InvoiceService {
 
     List<InvoiceDTO> getAllInvoices(InvoiceFilter invoiceFilter);
 
-    List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber);
-
-    List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber);
-
     InvoiceDTO getInvoice(Long invoiceId);
 
     InvoiceDTO updateInvoice(Long invoiceId, InvoiceDTO invoiceDTO);
