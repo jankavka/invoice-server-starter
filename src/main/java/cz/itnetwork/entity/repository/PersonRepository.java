@@ -32,9 +32,9 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
     List<PersonEntity> findByHidden(boolean hidden);
 
     @Query(value = "SELECT p.id, p.name, SUM(i.price) \n" +
-            "FROM invoice i \n" +
-            "JOIN i.seller p \n" +
-            "GROUP BY i.seller, p.name")
+            "FROM person p \n" +
+            "LEFT JOIN invoice i ON p.id = i.seller \n" +
+            "GROUP BY i.seller")
     List<Object[]> getRevenueByPerson();
 
 }
