@@ -1,5 +1,6 @@
 package cz.itnetwork.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,9 @@ public class InvoiceDTO {
     private Integer vat;
 
     private String note;
+
+    @JsonProperty("_id")
+    private Long id;
 
 
 }

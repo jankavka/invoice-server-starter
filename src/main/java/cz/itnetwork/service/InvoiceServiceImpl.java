@@ -63,7 +63,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         InvoiceEntity entity = invoiceMapper.toEntity(invoiceDTO);
         entity.setId(invoiceId);
         InvoiceEntity saved = invoiceRepository.save(entity);
-        return invoiceMapper.toDTO(saved);
+        InvoiceDTO returnedDTO = invoiceMapper.toDTO(saved);
+        returnedDTO.setId(invoiceId);
+        return returnedDTO;
 
     }
 
