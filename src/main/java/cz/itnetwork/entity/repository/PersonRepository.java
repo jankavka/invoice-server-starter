@@ -34,7 +34,7 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
     @Query(value = "SELECT p.id, p.name, SUM(i.price) \n" +
             "FROM person p \n" +
             "LEFT JOIN invoice i ON p.id = i.seller \n" +
-            "GROUP BY i.seller")
+            "GROUP BY p.id")
     List<Object[]> getRevenueByPerson();
 
 }
