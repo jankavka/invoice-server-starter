@@ -36,14 +36,30 @@ public interface PersonService {
 
     PersonDTO updatePerson(long personId, PersonDTO personDTO);
 
+
     PersonEntity getPersonByIdentificationNumber(String identificationNumber);
 
+    /**
+     * fetches persons statistics consists form persons id, persons name and persons revenue from database
+     * using a repository method getRevenueByPerson()
+     *
+     * @return person statistics from database
+     */
     List<PersonStatistics> getPersonsStatistics();
 
+    /**
+     * fetches all invoices connected with certain seller (person) with identification number
+     * @param identificationNumber of concrete seller (person)
+     * @return
+     */
     List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber);
 
+    /**
+     * fetches all invoices connected with certain buyer (person) with identification number
+     * @param identificationNumber of concrete buyer (person)
+     * @return
+     */
     List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber);
-
 
 
 }

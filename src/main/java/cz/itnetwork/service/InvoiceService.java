@@ -8,8 +8,20 @@ import java.util.List;
 
 public interface InvoiceService {
 
+    /**
+     * Creates a new invoice
+     *
+     * @param invoiceDTO is object with invoice details
+     * @return DTO with created invoice
+     */
     InvoiceDTO createInvoice(InvoiceDTO invoiceDTO);
 
+    /**
+     * Fetches invoices from database. Fetch is determined by filter.
+     *
+     * @param invoiceFilter is object which represents filter for fetching invoices
+     * @return List of DTO's fetched from database
+     */
     List<InvoiceDTO> getAllInvoices(InvoiceFilter invoiceFilter);
 
     InvoiceDTO getInvoice(Long invoiceId);
@@ -18,5 +30,10 @@ public interface InvoiceService {
 
     void deleteInvoice(Long invoiceId);
 
+    /**
+     * This method fetches certain statistics from database
+     *
+     * @return InvoiceStatistic object with concrete attributes fetched from database.
+     */
     InvoiceStatistics getInvoiceStatistics();
 }

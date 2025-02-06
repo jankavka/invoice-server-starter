@@ -31,6 +31,11 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     List<PersonEntity> findByHidden(boolean hidden);
 
+    /**
+     * fetches revenues of each person from database with their (person's) id's.
+     *
+     * @return list of object arrays where there are persons id, person name and persons revenues on indexes 0, 1 and 2.
+     */
     @Query(value = "SELECT p.id, p.name, SUM(i.price) \n" +
             "FROM person p \n" +
             "LEFT JOIN invoice i ON p.id = i.seller \n" +

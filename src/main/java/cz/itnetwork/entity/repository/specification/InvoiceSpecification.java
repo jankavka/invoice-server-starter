@@ -17,6 +17,14 @@ public class InvoiceSpecification implements Specification<InvoiceEntity> {
 
     private final InvoiceFilter invoiceFilter;
 
+    /**
+     * implementation of method from Specification<> interface which creates a predicate of all condition defined
+     * in the body of method
+     * @param root is an object of invoice from database
+     * @param query
+     * @param criteriaBuilder object which creates predicates
+     * @return a predicate of all defined conditions
+     */
     @Override
     public Predicate toPredicate(Root<InvoiceEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();

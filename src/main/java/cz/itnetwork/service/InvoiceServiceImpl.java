@@ -77,9 +77,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceStatistics getInvoiceStatistics() {
         InvoiceStatistics statistics = new InvoiceStatistics();
-        statistics.setCurrentYearSum(invoiceRepository.getCurrentYearSum().get(0));
-        statistics.setInvoicesCount(invoiceRepository.getInvoicesCount().get(0));
-        statistics.setAllTimeSum(invoiceRepository.getAllTimeSum().get(0));
+        statistics.setCurrentYearSum(invoiceRepository.getCurrentYearSum());
+        statistics.setInvoicesCount(invoiceRepository.getInvoicesCount());
+        statistics.setAllTimeSum(invoiceRepository.getAllTimeSum());
         return statistics;
     }
 
