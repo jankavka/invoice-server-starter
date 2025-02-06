@@ -21,7 +21,7 @@ public class InvoiceSpecification implements Specification<InvoiceEntity> {
      * implementation of method from Specification<> interface which creates a predicate of all condition defined
      * in the body of method
      * @param root is an object of invoice from database
-     * @param query
+     * @param query not used
      * @param criteriaBuilder object which creates predicates
      * @return a predicate of all defined conditions
      */
