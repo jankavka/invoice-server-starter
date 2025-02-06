@@ -50,14 +50,14 @@ public interface PersonService {
     /**
      * fetches all invoices connected with certain seller (person) with identification number
      * @param identificationNumber of concrete seller (person)
-     * @return
+     * @return invoices connected with certain seller (person)
      */
     List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber);
 
     /**
      * fetches all invoices connected with certain buyer (person) with identification number
      * @param identificationNumber of concrete buyer (person)
-     * @return
+     * @return invoices connected with certain buyer (person)
      */
     List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber);
 
