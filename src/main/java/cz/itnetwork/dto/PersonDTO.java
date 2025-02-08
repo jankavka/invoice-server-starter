@@ -59,5 +59,8 @@ public class PersonDTO {
 
     private Countries country;
 
+    @JsonProperty("hidden")
+    private boolean isHidden;
+
     private String note;
 }

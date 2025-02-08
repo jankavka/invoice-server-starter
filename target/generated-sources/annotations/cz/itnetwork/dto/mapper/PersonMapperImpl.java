@@ -36,6 +36,7 @@ public class PersonMapperImpl implements PersonMapper {
         personEntity.setCity( source.getCity() );
         personEntity.setCountry( source.getCountry() );
         personEntity.setNote( source.getNote() );
+        personEntity.setHidden( source.isHidden() );
 
         return personEntity;
     }
@@ -61,6 +62,7 @@ public class PersonMapperImpl implements PersonMapper {
         personDTO.setZip( source.getZip() );
         personDTO.setCity( source.getCity() );
         personDTO.setCountry( source.getCountry() );
+        personDTO.setHidden( source.isHidden() );
         personDTO.setNote( source.getNote() );
 
         return personDTO;
