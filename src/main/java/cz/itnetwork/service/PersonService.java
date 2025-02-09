@@ -47,19 +47,14 @@ public interface PersonService {
      */
     List<PersonStatistics> getPersonsStatistics();
 
-    /**
-     * fetches all invoices connected with certain seller (person) with identification number
-     * @param identificationNumber of concrete seller (person)
-     * @return invoices connected with certain seller (person)
-     */
-    List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber);
 
     /**
      * fetches all invoices connected with certain buyer (person) with identification number
-     * @param identificationNumber of concrete buyer (person)
+     * @param indentificationNumber of concrete buyer (person)
+     * @param isSales sets invoices as by seller or buyer
      * @return invoices connected with certain buyer (person)
      */
-    List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber);
+    List<InvoiceDTO> getInvoices(String indentificationNumber, boolean isSales);
 
 
 }

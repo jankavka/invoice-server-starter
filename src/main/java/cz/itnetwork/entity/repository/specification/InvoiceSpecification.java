@@ -39,9 +39,8 @@ public class InvoiceSpecification implements Specification<InvoiceEntity> {
             predicates.add(criteriaBuilder.equal(sellerJoin.get(PersonEntity_.ID), invoiceFilter.getSellerId()));
         }
 
-        if (invoiceFilter.getProduct() != null) {
-            predicates.add(root.get(InvoiceEntity_.PRODUCT).in(invoiceFilter.getProduct()));
-        }
+        if(invoiceFilter.getProduct() != null)
+            predicates.add(criteriaBuilder.like(root.get(InvoiceEntity_.PRODUCT), "%" + invoiceFilter.getProduct() + "%"));
 
         if (invoiceFilter.getMinPrice() != null){
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(InvoiceEntity_.PRICE), invoiceFilter.getMinPrice()));

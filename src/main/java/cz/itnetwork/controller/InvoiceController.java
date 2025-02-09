@@ -15,7 +15,7 @@ import java.util.List;
 public class InvoiceController {
 
     @Autowired
-    InvoiceService invoiceService;
+    private InvoiceService invoiceService;
 
     @PostMapping("/invoices")
     public InvoiceDTO createInvoice(@RequestBody InvoiceDTO invoiceDTO) {

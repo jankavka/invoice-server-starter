@@ -26,8 +26,10 @@ import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.dto.mapper.PersonMapper;
 import cz.itnetwork.dto.statistics.PersonStatistics;
+import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -77,7 +79,11 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDTO getPerson(long personId) {
-        return personMapper.toDTO(fetchPersonById(personId));
+        try {
+            return personMapper.toDTO(fetchPersonById(personId));
+        }catch(NotFoundException e){
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override
@@ -104,8 +110,12 @@ public class PersonServiceImpl implements PersonService {
      * @throws org.webjars.NotFoundException In case a person with the passed [id] isn't found
      */
     private PersonEntity fetchPersonById(long id) {
-        return personRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Person with id " + id + " wasn't found in the database."));
+        try {
+            return personRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Person with id " + id + " wasn't found in the database."));
+        }catch(NotFoundException e) {
+            throw new EntityNotFoundException();
+        }
     }
     // endregion
 
@@ -129,17 +139,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<InvoiceDTO> getAllInvoicesBySeller(String identificationNumber) {
-        return getPersonByIdentificationNumber(identificationNumber).getSales()
-                .stream()
-                .map(invoiceMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<InvoiceDTO> getAllInvoicesByBuyer(String identificationNumber) {
-        return getPersonByIdentificationNumber(identificationNumber).getPurchases()
-                .stream()
+    public List<InvoiceDTO> getInvoices(String identificationNumber, boolean isSales) {
+        List<InvoiceEntity> invoices = isSales ?
+                getPersonByIdentificationNumber(identificationNumber).getSales()
+                :
+                getPersonByIdentificationNumber(identificationNumber).getPurchases();
+        return invoices.stream()
                 .map(invoiceMapper::toDTO)
                 .collect(Collectors.toList());
     }

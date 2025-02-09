@@ -12,6 +12,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,11 +37,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         entity.setSeller(personRepository.getReferenceById(invoiceDTO.getSeller().getId()));
         entity.setBuyer(personRepository.getReferenceById(invoiceDTO.getBuyer().getId()));
         InvoiceEntity savedInvoice;
-        try {
-            savedInvoice = invoiceRepository.save(entity);
-        }catch(RuntimeException e){
-            throw new EntityNotFoundException();
-        }
+        savedInvoice = invoiceRepository.save(entity);
         return invoiceMapper.toDTO(savedInvoice);
     }
 
@@ -62,24 +60,34 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDTO updateInvoice(Long invoiceId, InvoiceDTO invoiceDTO) {
         InvoiceEntity entity = invoiceMapper.toEntity(invoiceDTO);
         entity.setId(invoiceId);
-        InvoiceEntity saved = invoiceRepository.save(entity);
-        InvoiceDTO returnedDTO = invoiceMapper.toDTO(saved);
-        returnedDTO.setId(invoiceId);
-        return returnedDTO;
-
+        try {
+            InvoiceEntity saved = invoiceRepository.save(entity);
+            return invoiceMapper.toDTO(saved);
+        }catch(NotFoundException e){
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override
     public void deleteInvoice(Long invoiceId) {
-        invoiceRepository.delete(invoiceRepository.getReferenceById(invoiceId));
+        try {
+            invoiceRepository.delete(invoiceRepository.getReferenceById(invoiceId));
+        }
+        catch(NotFoundException e){
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override
     public InvoiceStatistics getInvoiceStatistics() {
         InvoiceStatistics statistics = new InvoiceStatistics();
-        statistics.setCurrentYearSum(invoiceRepository.getCurrentYearSum());
-        statistics.setInvoicesCount(invoiceRepository.getInvoicesCount());
-        statistics.setAllTimeSum(invoiceRepository.getAllTimeSum());
+        try {
+            statistics.setCurrentYearSum(invoiceRepository.getCurrentYearSum());
+            statistics.setInvoicesCount(invoiceRepository.getInvoicesCount());
+            statistics.setAllTimeSum(invoiceRepository.getAllTimeSum());
+        }catch (RuntimeException e){
+            throw new EntityNotFoundException();
+        }
         return statistics;
     }
 
