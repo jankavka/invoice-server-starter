@@ -54,7 +54,7 @@ public interface PersonService {
      * @param isSales sets invoices as by seller or buyer
      * @return invoices connected with certain buyer (person)
      */
-    List<InvoiceDTO> getInvoices(String indentificationNumber, boolean isSales);
+    List<InvoiceDTO> getInvoicesByPerson(String indentificationNumber, boolean isSales);
 
 
 }

@@ -25,6 +25,7 @@ import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.service.PersonService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping("/persons")
-    public PersonDTO addPerson(@RequestBody PersonDTO personDTO) {
+    public PersonDTO addPerson(@RequestBody @Valid PersonDTO personDTO) {
         return  personService.addPerson(personDTO);
     }
 
@@ -60,7 +61,7 @@ public class PersonController {
     }
 
     @PutMapping("/persons/{personId}")
-    public PersonDTO editPerson(@PathVariable Long personId, @RequestBody PersonDTO personDTO){
+    public PersonDTO editPerson(@PathVariable @Valid Long personId, @RequestBody PersonDTO personDTO){
         return personService.updatePerson(personId, personDTO);
     }
 
@@ -71,12 +72,12 @@ public class PersonController {
 
     @GetMapping("/identification/{identificationNumber}/sales")
     public List<InvoiceDTO> showAllInvoicesBySeller(@PathVariable String identificationNumber) {
-        return personService.getInvoices(identificationNumber,true);
+        return personService.getInvoicesByPerson(identificationNumber,true);
     }
 
     @GetMapping("/identification/{identificationNumber}/purchases")
     public List<InvoiceDTO> showAllInvoicesByBuyer(@PathVariable String identificationNumber) {
-        return personService.getInvoices(identificationNumber, false);
+        return personService.getInvoicesByPerson(identificationNumber, false);
     }
 }
 

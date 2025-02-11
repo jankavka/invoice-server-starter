@@ -4,6 +4,7 @@ import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.statistics.InvoiceStatistics;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import cz.itnetwork.service.InvoiceService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @PostMapping("/invoices")
-    public InvoiceDTO createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
+    public InvoiceDTO createInvoice(@RequestBody @Valid InvoiceDTO invoiceDTO) {
         return invoiceService.createInvoice(invoiceDTO);
     }
 
@@ -33,7 +34,7 @@ public class InvoiceController {
     }
 
     @PutMapping("/invoices/{invoiceId}")
-    public InvoiceDTO editInvoice(@PathVariable Long invoiceId, @RequestBody InvoiceDTO invoiceDTO) {
+    public InvoiceDTO editInvoice(@PathVariable Long invoiceId, @RequestBody @Valid InvoiceDTO invoiceDTO) {
         return invoiceService.updateInvoice(invoiceId, invoiceDTO);
     }
 

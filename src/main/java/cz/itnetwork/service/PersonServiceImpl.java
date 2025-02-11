@@ -29,11 +29,14 @@ import cz.itnetwork.dto.statistics.PersonStatistics;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
+import cz.itnetwork.service.exceptions.IdentificationNumberDuplicityException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,9 +55,13 @@ public class PersonServiceImpl implements PersonService {
 
     public PersonDTO addPerson(PersonDTO personDTO) {
         PersonEntity entity = personMapper.toEntity(personDTO);
-        entity = personRepository.save(entity);
-
-        return personMapper.toDTO(entity);
+        try {
+            entity = personRepository.save(entity);
+            return personMapper.toDTO(entity);
+        }catch(Exception e ){
+            System.out.println("Vyjímka zachycena");
+            throw new IdentificationNumberDuplicityException("Zvolené IČO se již nachází v databázi");
+        }
     }
 
     @Override
@@ -91,11 +98,15 @@ public class PersonServiceImpl implements PersonService {
         PersonEntity fetchedEntity = fetchPersonById(personId);
         fetchedEntity.setHidden(true);
         PersonEntity newEntity = personMapper.toEntity(personDTO);
-        PersonEntity savedEntity = personRepository.save(newEntity);
-        PersonDTO returnDTO = personMapper.toDTO(savedEntity);
-        returnDTO.setId(personId);
+        try {
+            PersonEntity savedEntity = personRepository.save(newEntity);
+            PersonDTO returnDTO = personMapper.toDTO(savedEntity);
+            returnDTO.setId(personId);
 
-        return personMapper.toDTO(savedEntity);
+            return personMapper.toDTO(savedEntity);
+        }catch(Exception e ){
+            throw new IdentificationNumberDuplicityException("Zvolené IČO se již nachází v databázi");
+        }
     }
 
 
@@ -128,6 +139,7 @@ public class PersonServiceImpl implements PersonService {
         }
         return personRepository.getReferenceById(personId);
 
+
     }
 
     @Override
@@ -139,7 +151,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<InvoiceDTO> getInvoices(String identificationNumber, boolean isSales) {
+    public List<InvoiceDTO> getInvoicesByPerson(String identificationNumber, boolean isSales) {
         List<InvoiceEntity> invoices = isSales ?
                 getPersonByIdentificationNumber(identificationNumber).getSales()
                 :
