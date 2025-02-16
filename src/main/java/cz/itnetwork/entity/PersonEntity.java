@@ -71,6 +71,7 @@ public class PersonEntity {
     @Enumerated(EnumType.STRING)
     private Countries country;
 
+    @Column
     private String note;
 
     private boolean hidden = false;
