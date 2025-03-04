@@ -4,17 +4,32 @@ import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.statistics.InvoiceStatistics;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
+import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import cz.itnetwork.entity.repository.InvoiceRepository;
 import cz.itnetwork.entity.repository.PersonRepository;
 import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDMMType1Font;
+import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.encoding.Encoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.io.*;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +49,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
 
         InvoiceEntity entity = invoiceMapper.toEntity(invoiceDTO);
+        byte[] pdfDocument = createPDF(invoiceDTO).toByteArray();
         entity.setSeller(personRepository.getReferenceById(invoiceDTO.getSeller().getId()));
         entity.setBuyer(personRepository.getReferenceById(invoiceDTO.getBuyer().getId()));
+        entity.setPdfContent(pdfDocument);
         InvoiceEntity savedInvoice;
         savedInvoice = invoiceRepository.save(entity);
         return invoiceMapper.toDTO(savedInvoice);
@@ -89,6 +106,86 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new EntityNotFoundException();
         }
         return statistics;
+    }
+
+    @Override
+    public ByteArrayOutputStream createPDF(InvoiceDTO invoiceDTO) {
+
+        final float lineHeight = 20F;
+
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            PDDocument document = new PDDocument()){
+
+            PDPage page = new PDPage();
+            PersonEntity seller = personRepository.getReferenceById(invoiceDTO.getSeller().getId());
+            PersonEntity buyer = personRepository.getReferenceById(invoiceDTO.getBuyer().getId());
+
+            //new page of document
+            document.addPage(page);
+
+            //new font
+            InputStream fontStream = getClass().getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
+
+            //new font added into document
+            PDType0Font font = PDType0Font.load(document,fontStream, true);
+
+            //Creating a content for a page
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            contentStream.beginText();
+            contentStream.setFont(font,25);
+            contentStream.newLineAtOffset(55, 750);
+            contentStream.showText("Faktura číslo: " + invoiceDTO.getInvoiceNumber());
+            contentStream.newLineAtOffset(0, 2*(-lineHeight));
+            contentStream.setFont(font, 12);
+            contentStream.showText("Dodavatel: " + seller.getName());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("IČO: " + seller.getIdentificationNumber());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Bydliště: " + seller.getStreet() + ", " + seller.getCity() + ", "+ seller.getCountry());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Číslo účtu: " + seller.getAccountNumber() + "/" + buyer.getBankCode());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Email: " + seller.getMail());
+            contentStream.newLineAtOffset(0, 3*(-lineHeight));
+            contentStream.showText("Odběratel: " + buyer.getName());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("IČO: " + buyer.getIdentificationNumber());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Bydliště: " + buyer.getStreet() + ", " + buyer.getCity() + ", " + buyer.getCountry());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Číslo účtu: " + buyer.getAccountNumber());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Email: " + buyer.getMail());
+            contentStream.newLineAtOffset(0, 3*(-lineHeight));
+            contentStream.showText("Datum splatnosti: " + invoiceDTO.getDueDate());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Variabilní symbol: " + invoiceDTO.getInvoiceNumber());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Položky k fakturaci: " + invoiceDTO.getProduct());
+            contentStream.newLineAtOffset(0, -lineHeight);
+            contentStream.showText("Cena: " + invoiceDTO.getPrice() + " Kč");
+            contentStream.endText();
+
+            contentStream.close();
+
+            document.save(outputStream);
+            return outputStream;
+
+        }catch(IOException e){
+            throw new RuntimeException("Chyba během generování pdf faktury, " + e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getPdf(Long invoiceId) {
+        byte[] pdfContent = invoiceRepository.getReferenceById(invoiceId).getPdfContent();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=faktura.pdf")
+                .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                .body(pdfContent);
     }
 
 }

@@ -3,7 +3,10 @@ package cz.itnetwork.service;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.statistics.InvoiceStatistics;
 import cz.itnetwork.entity.filter.InvoiceFilter;
+import org.springframework.http.ResponseEntity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface InvoiceService {
@@ -36,4 +39,8 @@ public interface InvoiceService {
      * @return InvoiceStatistic object with concrete attributes fetched from database.
      */
     InvoiceStatistics getInvoiceStatistics();
+
+    ByteArrayOutputStream createPDF(InvoiceDTO invoiceDTO);
+
+    ResponseEntity<byte[]> getPdf(Long invoiceId);
 }

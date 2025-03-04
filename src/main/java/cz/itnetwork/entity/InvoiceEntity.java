@@ -43,4 +43,8 @@ public class InvoiceEntity {
 
     @Column
     private String note;
+
+    @Lob
+    @Column (columnDefinition = "MEDIUMBLOB")
+    private byte[] pdfContent;
 }
