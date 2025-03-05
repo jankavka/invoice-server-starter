@@ -2,6 +2,7 @@ package cz.itnetwork.service;
 
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.statistics.InvoiceStatistics;
+import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import org.springframework.http.ResponseEntity;
 
@@ -43,4 +44,6 @@ public interface InvoiceService {
     ByteArrayOutputStream createPDF(InvoiceDTO invoiceDTO);
 
     ResponseEntity<byte[]> getPdf(Long invoiceId);
+
+    void generateQrCode(InvoiceDTO invoiceDTO, PersonEntity seller, String pathToStoreQrCode);
 }
