@@ -52,7 +52,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoices/{invoiceId}/pdf")
-    public ResponseEntity<byte[]> showPdf(@PathVariable Long invoiceId){
+    public ResponseEntity<byte[]> showPdfInvoice(@PathVariable Long invoiceId){
         return invoiceService.getPdf(invoiceId);
     }
 

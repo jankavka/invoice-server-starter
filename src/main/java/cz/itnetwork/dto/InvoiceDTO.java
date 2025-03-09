@@ -42,7 +42,7 @@ public class InvoiceDTO {
     @JsonProperty("_id")
     private Long id;
 
-    private byte[] pdfContent;
+    //private byte[] pdfContent;
 
 
 }
