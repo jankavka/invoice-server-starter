@@ -31,16 +31,17 @@ import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
 import cz.itnetwork.service.exceptions.IdentificationNumberDuplicityException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PersonServiceImpl implements PersonService {
 
 
@@ -53,18 +54,21 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     private InvoiceMapper invoiceMapper;
 
+    @Override
+    @Transactional
     public PersonDTO addPerson(PersonDTO personDTO) {
         PersonEntity entity = personMapper.toEntity(personDTO);
         try {
             entity = personRepository.save(entity);
             return personMapper.toDTO(entity);
         }catch(Exception e ){
-            System.out.println("Vyjímka zachycena");
-            throw new IdentificationNumberDuplicityException("Zvolené IČO se již nachází v databázi");
+            log.info("Exception catched");
+            throw new IdentificationNumberDuplicityException("Chosen ICO already in database");
         }
     }
 
     @Override
+    @Transactional
     public void removePerson(long personId) {
         try {
             PersonEntity person = fetchPersonById(personId);
@@ -94,6 +98,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @Transactional
     public PersonDTO updatePerson(long personId, PersonDTO personDTO) {
         PersonEntity fetchedEntity = fetchPersonById(personId);
         fetchedEntity.setHidden(true);
@@ -105,7 +110,7 @@ public class PersonServiceImpl implements PersonService {
 
             return personMapper.toDTO(savedEntity);
         }catch(Exception e ){
-            throw new IdentificationNumberDuplicityException("Zvolené IČO se již nachází v databázi");
+            throw new IdentificationNumberDuplicityException("Chosen ICO already in database");
         }
     }
 
@@ -125,6 +130,7 @@ public class PersonServiceImpl implements PersonService {
             return personRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Person with id " + id + " wasn't found in the database."));
         }catch(NotFoundException e) {
+            log.info("Person not found");
             throw new EntityNotFoundException();
         }
     }
