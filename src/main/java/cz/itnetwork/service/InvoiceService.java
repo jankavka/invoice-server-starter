@@ -7,7 +7,6 @@ import cz.itnetwork.entity.filter.InvoiceFilter;
 import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 public interface InvoiceService {

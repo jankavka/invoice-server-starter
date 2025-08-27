@@ -14,6 +14,7 @@ import cz.itnetwork.entity.repository.InvoiceRepository;
 import cz.itnetwork.entity.repository.PersonRepository;
 import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -29,10 +30,10 @@ import org.webjars.NotFoundException;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
@@ -90,6 +91,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         try {
             invoiceRepository.delete(invoiceRepository.getReferenceById(invoiceId));
         } catch (NotFoundException e) {
+            log.warn("Entity to delete with id {} not found", invoiceId);
             throw new EntityNotFoundException();
         }
     }
@@ -102,6 +104,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             statistics.setInvoicesCount(invoiceRepository.getInvoicesCount());
             statistics.setAllTimeSum(invoiceRepository.getAllTimeSum());
         } catch (RuntimeException e) {
+            log.warn("Entity not found");
             throw new EntityNotFoundException();
         }
         return statistics;
@@ -182,7 +185,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             return outputStream;
 
         } catch (IOException e) {
-            throw new RuntimeException("Chyba během generování pdf faktury, " + e.getMessage());
+            throw new RuntimeException("Error during generating pdf, " + e.getMessage());
         }
 
     }
@@ -207,7 +210,8 @@ public class InvoiceServiceImpl implements InvoiceService {
             BitMatrix bitMatrix = new MultiFormatWriter().encode(paymentInfo, BarcodeFormat.QR_CODE, 100, 100);
             MatrixToImageWriter.writeToPath(bitMatrix, "jpg", Paths.get(pathToStoreQrCode));
         } catch (Exception e) {
-            throw new RuntimeException("Nepodařilo se vygenerovat QR kód");
+
+            throw new RuntimeException("Error during generating QR code");
         }
     }
 
